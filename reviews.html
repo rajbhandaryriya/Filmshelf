@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>FilmShelf Reviews </title>
+
+<style>
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+}
+
+body{
+font-family:Arial,sans-serif;
+background:linear-gradient(to right,#eef7ff,#d8edff);
+}
+
+nav{
+background:skyblue;
+padding:15px 30px;
+box-shadow:0 3px 10px gray;
+display:flex;
+align-items:center;
+flex-wrap:wrap;
+}
+
+.nav-left a{
+text-decoration:none;
+color:black;
+font-weight:bold;
+margin-right:25px;
+}
+
+.nav-left a:hover{
+color:white;
+}
+
+.nav-right{
+margin-left:auto;
+}
+
+.nav-right a{
+text-decoration:none;
+color:black;
+font-weight:bold;
+}
+
+.nav-right a:hover{
+color:white;
+}
+
+h1{
+text-align:center;
+color:#1f4e79;
+margin:25px;
+}
+
+.section{
+width:90%;
+margin:20px auto;
+background:white;
+padding:25px;
+border-radius:15px;
+box-shadow:0 5px 15px rgba(0,0,0,.2);
+}
+
+.section h2{
+color:#1f4e79;
+margin-bottom:15px;
+}
+
+input,
+select,
+textarea{
+width:100%;
+padding:10px;
+margin:10px 0;
+border:1px solid #ccc;
+border-radius:5px;
+}
+
+textarea{
+height:100px;
+resize:none;
+}
+
+button{
+padding:10px 15px;
+background:#87CEEB;
+color:white;
+border:none;
+border-radius:5px;
+cursor:pointer;
+font-weight:bold;
+}
+
+button:hover{
+background:#1f4e79;
+}
+
+.review-card{
+background:#f4f9fc;
+padding:15px;
+margin-top:15px;
+border-radius:10px;
+}
+
+.review-card h3{
+color:#1f4e79;
+}
+
+.review-card .rating{
+color:#f5a623;
+font-size:18px;
+margin:5px 0;
+}
+
+.review-card .review-text{
+margin-top:8px;
+line-height:1.5;
+}
+
+.review-card .remove-btn{
+margin-top:10px;
+background:#e74c3c;
+}
+
+.review-card .remove-btn:hover{
+background:#c0392b;
+}
+
+.empty{
+text-align:center;
+font-size:18px;
+color:#666;
+padding:20px;
+}
+
+.footer{
+background:#1f4e79;
+color:white;
+padding:30px;
+text-align:center;
+margin-top:40px;
+}
+
+@media (max-width: 600px){
+
+.section{
+padding:15px;
+}
+
+h1{
+font-size:28px;
+}
+
+}
+
+</style>
+
+</head>
+
+<body>
+
+<script>
+
+if(localStorage.getItem("login")!="yes")
+{
+window.location.href="index.html";
+}
+
+</script>
+
+<nav>
+
+<div class="nav-left">
+
+<a href="home.html">Home</a>
+
+<a href="watchlist.html">Watchlist</a>
+
+<a href="reviews.html">Reviews </a>
+
+</div>
+
+<div class="nav-right">
+
+<a href="#" onclick="logout()">Logout</a>
+
+</div>
+
+</nav>
+
+<h1>Reviews </h1>
+
+<div class="section">
+
+<h2>Add Review</h2>
+
+<input
+type="text"
+id="movieName"
+placeholder="Movie Name">
+
+<select id="rating">
+
+<option value="">Select Rating</option>
+<option value="1"> 1</option>
+<option value="2"> 2</option>
+<option value="3"> 3</option>
+<option value="4"> 4</option>
+<option value="5"> 5</option>
+
+</select>
+
+<textarea
+id="reviewText"
+placeholder="Write your review...">
+</textarea>
+
+<button onclick="addReview()">
+Submit Review
+</button>
+
+</div>
+
+<div class="section">
+
+<h2>User Reviews</h2>
+
+<div id="reviewsContainer"></div>
+
+</div>
+
+<footer class="footer">
+
+<h2>FilmShelf</h2>
+
+<p>Share your thoughts and discover movie ratings.</p>
+
+</footer>
+
+<script>
+
+function logout(){
+
+localStorage.removeItem("login");
+
+window.location.href="index.html";
+
+}
+
+function getReviews(){
+
+return JSON.parse(localStorage.getItem("reviews")) || [];
+
+}
+
+function saveReviews(reviews){
+
+localStorage.setItem("reviews", JSON.stringify(reviews));
+
+}
+
+function addReview(){
+
+let movieName =
+document.getElementById("movieName").value.trim();
+
+let rating =
+document.getElementById("rating").value;
+
+let reviewText =
+document.getElementById("reviewText").value.trim();
+
+if(movieName=="" || rating=="" || reviewText==""){
+
+alert("Please fill in movie name, rating, and review before submitting.");
+
+return;
+
+}
+
+let reviews = getReviews();
+
+reviews.push({
+
+movie: movieName,
+
+rating: Number(rating),
+
+text: reviewText
+
+});
+
+saveReviews(reviews);
+
+document.getElementById("movieName").value = "";
+
+document.getElementById("rating").value = "";
+
+document.getElementById("reviewText").value = "";
+
+loadReviews();
+
+}
+
+function removeReview(index){
+
+let reviews = getReviews();
+
+reviews.splice(index, 1);
+
+saveReviews(reviews);
+
+loadReviews();
+
+}
+
+function loadReviews(){
+
+let reviews = getReviews();
+
+let container = document.getElementById("reviewsContainer");
+
+container.innerHTML = "";
+
+if(reviews.length == 0){
+
+container.innerHTML =
+"<div class='empty'>No reviews yet. Be the first to add one!</div>";
+
+}
+else{
+
+for(let i=0; i<reviews.length; i++){
+
+let stars = repeat(reviews[i].rating) + repeat(5 - reviews[i].rating);
+
+container.innerHTML +=
+
+`
+<div class="review-card">
+
+<h3>${reviews[i].movie}</h3>
+
+<div class="rating">${stars}</div>
+
+<p class="review-text">${reviews[i].text}</p>
+
+<button class="remove-btn" onclick="removeReview(${i})">Remove</button>
+
+</div>
+`;
+
+}
+
+}
+
+}
+
+loadReviews();
+
+</script>
+
+</body>
+
+</html>

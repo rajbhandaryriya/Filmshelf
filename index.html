@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>FilmShelf Login</title>
+
+<style>
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+}
+
+body{
+
+font-family:Arial;
+background:#eef7ff;
+
+}
+
+.box{
+
+width:350px;
+max-width:90%;
+margin:40px auto;
+background:white;
+padding:25px;
+border-radius:10px;
+box-shadow:0 0 10px gray;
+
+}
+
+h1,h2{
+
+text-align:center;
+color:#1f4e79;
+
+}
+
+
+input{
+
+width:100%;
+padding:10px;
+margin:8px 0;
+box-sizing:border-box;
+
+}
+
+
+button{
+
+width:100%;
+padding:10px;
+background:#87CEEB;
+border:0;
+font-weight:bold;
+cursor:pointer;
+
+}
+
+button:hover{
+
+background:#1f4e79;
+color:white;
+
+}
+
+#message{
+
+text-align:center;
+font-weight:bold;
+
+}
+
+@media (max-width: 400px){
+
+.box{
+
+margin:20px auto;
+padding:18px;
+
+}
+
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="box">
+
+<h1>
+ FilmShelf
+</h1>
+
+<h2>
+Register
+</h2>
+
+<input id="name"
+placeholder="Name">
+
+<input id="username"
+placeholder="Username">
+
+
+<input id="password"
+type="password"
+placeholder="Password">
+
+<button onclick="registerUser()">
+
+Register
+
+</button>
+
+<hr>
+
+<h2>
+Login
+</h2>
+
+
+<input id="loginUsername"
+placeholder="Username">
+
+<input id="loginPassword"
+type="password"
+placeholder="Password">
+
+<button onclick="loginUser()">
+
+Login
+
+</button>
+
+<p id="message"></p>
+
+</div>
+
+<script>
+
+function registerUser(){
+
+let name =
+document.getElementById("name").value;
+
+let username =
+document.getElementById("username").value;
+
+let password =
+document.getElementById("password").value;
+
+let special =
+/[!@#$%^&*]/;
+
+let number =
+/[0-9]/;
+
+
+if(name=="" || username=="" || password==""){
+
+showMessage(
+"Please fill all fields",
+"red"
+);
+
+return;
+
+}
+
+
+if(password.length < 6){
+
+showMessage(
+"Password must contain 6 characters",
+"red"
+);
+
+return;
+
+}
+
+if(!special.test(password)){
+
+showMessage(
+
+"Password needs 1 special character",
+"red"
+);
+
+return;
+}
+
+if(!number.test(password)){
+
+
+showMessage(
+"Password needs 1 number",
+"red"
+);
+
+return;
+
+}
+
+let account={
+
+    name:name,
+
+username:username,
+
+password:password
+
+};
+
+localStorage.setItem(
+
+"account",
+
+JSON.stringify(account)
+
+);
+
+showMessage(
+
+"Welcome "+username+"! Registration Successful",
+
+"brown"
+
+);
+
+}
+
+function loginUser(){
+
+let username=
+
+document.getElementById("loginUsername").value;
+
+let password=
+
+document.getElementById("loginPassword").value;
+
+let account =
+
+JSON.parse(
+
+localStorage.getItem("account")
+
+);
+
+if(account==null){
+
+showMessage(
+
+"Please register first",
+
+"red"
+
+);
+
+return;
+
+}
+
+if(username==account.username && password==account.password){
+
+    localStorage.setItem(
+
+"login",
+
+"yes"
+
+);
+alert(
+"Welcome "+account.username
+);
+window.location="home.html";
+}
+else{
+showMessage(
+"Wrong username or password",
+"red"
+);
+}
+}
+function showMessage(text,color){
+let msg=document.getElementById("message");
+msg.innerHTML=text;
+msg.style.color=color;
+}
+</script>
+</body>
+</html>
